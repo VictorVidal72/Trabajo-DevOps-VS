@@ -1,10 +1,5 @@
 # =========================================================================
-# codemagic.yaml - Pipeline CI/CD para Flutter
-# =========================================================================
-# Este fichero define los workflows de CI/CD para Codemagic.
-# Debe ubicarse en la raíz del repositorio.
-#
-# Documentación: https://docs.codemagic.io/yaml-basic-configuration/yaml-getting-started/
+# codemagic.yaml - Pipeline CI/CD para Flutter (Corregido para subcarpeta)
 # =========================================================================
 
 workflows:
@@ -13,18 +8,16 @@ workflows:
   # -----------------------------------------------------------------------
   flutter-ci:
     name: Flutter CI Pipeline
-    max_build_duration: 60  # minutos
-    instance_type: mac_mini_m1  # mac_mini_m1, mac_pro, linux
+    max_build_duration: 60
+    instance_type: mac_mini_m1
     
-    # Configuración del entorno
     environment:
-      flutter: stable        # stable, beta, master o versión específica
-      xcode: latest          # Solo para builds iOS
-      cocoapods: default     # Gestor de dependencias iOS
+      flutter: stable
+      xcode: latest
+      cocoapods: default
       vars:
-        FLUTTER_WEB: "true"  # Variables personalizadas
+        FLUTTER_WEB: "true"
       
-    # Triggers automáticos
     triggering:
       events:
         - push
@@ -36,58 +29,54 @@ workflows:
           include: true
         - pattern: 'feature/*'
           include: true
-      cancel_previous_builds: true  # Cancela builds anteriores si hay nuevo push
+      cancel_previous_builds: true
           
-    # Caché para acelerar builds
     cache:
       cache_paths:
         - $HOME/.pub-cache
         - $FLUTTER_ROOT/.pub-cache
         
-    # Scripts del pipeline
     scripts:
-      # Paso 1: Obtener dependencias
       - name: Obtener dependencias de Flutter
+        working_directory: demo_app
         script: |
           flutter pub get
           
-      # Paso 2: Análisis estático de código
       - name: Analizar código (lint)
+        working_directory: demo_app
         script: |
           flutter analyze --no-fatal-infos
-        ignore_failure: true  # No falla el build si hay warnings
+        ignore_failure: true
         
-      # Paso 3: Verificar formato de código
       - name: Verificar formato
+        working_directory: demo_app
         script: |
           dart format --set-exit-if-changed lib/
         ignore_failure: true
         
-      # Paso 4: Ejecutar tests unitarios
       - name: Ejecutar tests unitarios
+        working_directory: demo_app
         script: |
           flutter test --coverage --machine > test-results.json
-        test_report: test-results.json
+        test_report: demo_app/test-results.json
         
-      # Paso 5: Build Android (Debug para CI)
       - name: Build Android APK (Debug)
+        working_directory: demo_app
         script: |
           flutter build apk --debug
           
-    # Artefactos generados
     artifacts:
-      - build/**/outputs/**/*.apk
-      - coverage/lcov.info
-      - test-results.json
+      - demo_app/build/**/outputs/**/*.apk
+      - demo_app/coverage/lcov.info
+      - demo_app/test-results.json
       
-    # Notificaciones
     publishing:
       email:
         recipients:
           - equipo@example.com
         notify:
-          success: false   # No notificar en éxito
-          failure: true    # Notificar en fallo
+          success: false
+          failure: true
 
   # -----------------------------------------------------------------------
   # WORKFLOW 2: Pipeline de release (CD)
@@ -102,30 +91,30 @@ workflows:
       xcode: latest
       cocoapods: default
       groups:
-        - google_play_credentials  # Grupo de variables en Codemagic
+        - google_play_credentials
         - app_store_credentials
       vars:
         BUNDLE_ID: "com.example.app"
         
-    # Solo se ejecuta en tags de versión
     triggering:
       events:
         - tag
       tag_patterns:
-        - pattern: 'v*'  # v1.0.0, v2.1.0, etc.
+        - pattern: 'v*'
           include: true
           
     scripts:
       - name: Obtener dependencias
+        working_directory: demo_app
         script: flutter pub get
         
       - name: Ejecutar tests
+        working_directory: demo_app
         script: flutter test
         
-      # Build Android Release
       - name: Build Android App Bundle
+        working_directory: demo_app
         script: |
-          # Versión desde el tag (ej: v1.2.3 -> 1.2.3)
           VERSION=$(echo $CM_TAG | sed 's/v//')
           BUILD_NUMBER=$((PROJECT_BUILD_NUMBER))
           
@@ -134,8 +123,8 @@ workflows:
             --build-name=$VERSION \
             --build-number=$BUILD_NUMBER
             
-      # Build iOS Release
       - name: Build iOS IPA
+        working_directory: demo_app
         script: |
           VERSION=$(echo $CM_TAG | sed 's/v//')
           BUILD_NUMBER=$((PROJECT_BUILD_NUMBER))
@@ -147,24 +136,19 @@ workflows:
             --export-options-plist=/Users/builder/export_options.plist
             
     artifacts:
-      - build/**/outputs/**/*.aab
-      - build/ios/ipa/*.ipa
+      - demo_app/build/**/outputs/**/*.aab
+      - demo_app/build/ios/ipa/*.ipa
       
     publishing:
-      # Publicar a Google Play (Internal Track)
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
         submit_as_draft: true
-        
-      # Publicar a App Store Connect (TestFlight)
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_ID
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: true
-        
-      # Notificaciones
       email:
         recipients:
           - releases@example.com
@@ -178,7 +162,7 @@ workflows:
   flutter-tests:
     name: Flutter Tests Only
     max_build_duration: 30
-    instance_type: linux_x2  # Más económico para solo tests
+    instance_type: linux_x2
     
     environment:
       flutter: stable
@@ -192,16 +176,17 @@ workflows:
           
     scripts:
       - name: Obtener dependencias
+        working_directory: demo_app
         script: flutter pub get
         
       - name: Analizar código
+        working_directory: demo_app
         script: flutter analyze
         
       - name: Ejecutar tests con cobertura
+        working_directory: demo_app
         script: |
           flutter test --coverage
-          # Generar reporte HTML (opcional)
-          # genhtml coverage/lcov.info -o coverage/html
           
     artifacts:
-      - coverage/**
+      - demo_app/coverage/**
