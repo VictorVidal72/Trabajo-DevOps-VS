@@ -3,7 +3,7 @@
 
 ---
 
-## Diapositiva 1: Introducción y Definición
+## Diapositiva 1: Introducción y Definición.
 * **Herramienta elegida:** Codemagic (Plataforma SaaS de CI/CD para Mobile).
 * **¿Qué es?**: Un servicio en la nube que automatiza la construcción, testeo y despliegue de Apps.
 * **Concepto DevOps:** Implementación de **Infraestructura como Código (IaC)** mediante ficheros YAML para eliminar procesos manuales y errores humanos.
