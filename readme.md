@@ -12,7 +12,7 @@
 
 ---
 
-## Introducción
+## Introducción.
 
 **Codemagic** es una plataforma de **Integración Continua y Entrega Continua (CI/CD)** especializada principalmente en proyectos **Flutter, Android, iOS y aplicaciones multiplataforma**. Permite automatizar procesos como la compilación, ejecución de tests, generación de artefactos y despliegue de aplicaciones sin necesidad de mantener infraestructura propia.
 
