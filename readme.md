@@ -94,10 +94,10 @@ Codemagic es un servicio **SaaS** (Software as a Service), por lo que no requier
 1. Codemagic detectará automáticamente el tipo de proyecto (Flutter, React Native, etc.)
 2. Puedes usar el **Workflow Editor** (GUI) o crear un fichero `codemagic.yaml`
 3. Configurar variables de entorno si es necesario
-
+ 
 #### Paso 4: Ejecutar primer build
 1. Hacer clic en **"Start new build"**
-2. Seleccionar la rama y el workflow
+2. Seleccionar la rama y el workf low
 3. Monitorizar el progreso en el dashboard
 
 ### Opción 2: Usar Codemagic CLI (Local)
