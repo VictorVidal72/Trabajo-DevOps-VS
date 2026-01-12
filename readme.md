@@ -86,7 +86,7 @@ Codemagic es un servicio **SaaS** (Software as a Service), por lo que no requier
 
 #### Paso 2: Conectar repositorio
 1. En el dashboard, hacer clic en **"Add application"**
-2. Seleccionar el proveedor Git (GitHub, GitLab, Bitbucket)
+2. Seleccionar el proveedor Git (GitHub, GitLab,  Bitbucket)
 3. Autorizar el acceso a Codemagic
 4. Seleccionar el repositorio del proyecto
 

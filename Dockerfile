@@ -12,7 +12,7 @@
 FROM ghcr.io/cirruslabs/flutter:stable
 
 LABEL maintainer="Víctor Vidal & Mario Escobar"
-LABEL description="Entorno Flutter CI para desarrollo local"
+LABEL description="Entorno Flutter CI para desarrollo local "
 
 # Establecer directorio de trabajo
 WORKDIR /app
